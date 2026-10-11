@@ -1,0 +1,129 @@
+/* THE LAST BIRTHDAY — 360-degree first-person survival presentation.
+   Loaded after styles.css. Original story systems and saves remain intact. */
+#game{isolation:isolate}
+#imm-world{display:none;position:absolute;inset:0;width:100%;height:100%;z-index:1;touch-action:none;cursor:crosshair;background:#080b0e}
+#game.immersive-active #imm-world{display:block}
+#game.immersive-active #world{visibility:hidden}
+#game.immersive-active #world-actions{display:none!important}
+#game.immersive-active #vignette{pointer-events:none;opacity:.6}
+#game.immersive-active #grain{pointer-events:none}
+#imm-ui{display:block;position:absolute;inset:0;z-index:12;pointer-events:none;overflow:hidden;font-family:Georgia, 'Times New Roman',serif;color:#e5d5b8}
+#imm-ui:not(.playing)>:not(#imm-veil){display:none!important}#imm-ui.playing{display:block}
+#imm-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 51% 51%,transparent 31%,#0c081147 67%,#060608a6 100%);pointer-events:none}
+#imm-hit{position:absolute;inset:-4%;opacity:0;background:radial-gradient(ellipse,transparent 43%,#bd243cdd 99%);transition:opacity .2s;mix-blend-mode:screen;pointer-events:none}
+#imm-center{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:18px;height:18px;display:grid;place-items:center;opacity:.78}
+#imm-center::before,#imm-center::after{content:'';position:absolute;width:22px;height:1px;background:#e2d1a58c}#imm-center::after{transform:rotate(90deg)}#imm-center i{display:block;border-radius:50%;width:3px;height:3px;background:#eacb99}
+#imm-room{position:absolute;top:clamp(82px,12vh,115px);left:32px;font-size:clamp(9px,.78vw,12px);letter-spacing:.27em;opacity:.82;text-shadow:0 2px 10px #000}
+#imm-prompt{position:absolute;top:56%;left:50%;transform:translateX(-50%);font-size:clamp(10px,1.02vw,13px);letter-spacing:.15em;padding:10px 18px;border:1px solid #bfb8a075;background:#08080bc9;color:#eacfa6;white-space:nowrap;box-shadow:0 0 30px #0007}
+#imm-prompt[hidden]{display:none}
+#imm-threat{position:absolute;left:50%;top:77px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;opacity:0;transition:opacity .3s;color:#d97778;font-size:10px;letter-spacing:.2em}
+#imm-threat.visible{opacity:1}#imm-threat .imm-meter{width:100px;height:3px;background:#542e34}#imm-danger-bar{display:block;height:100%;background:#df5f66;width:0;box-shadow:0 0 16px #c43550}
+#imm-status{position:absolute;top:clamp(96px,14vh,145px);right:28px;display:flex;gap:17px;text-shadow:0 1px 8px #000;font-size:11px;letter-spacing:.12em}
+#imm-status b{font-weight:normal;color:#f9e2ad}
+#imm-hand{position:absolute;right:clamp(8px,4vw,85px);bottom:clamp(-92px,-3vw,-15px);width:clamp(260px,35vw,490px);height:clamp(250px,47vh,520px);transform-origin:60% 92%;pointer-events:none;filter:drop-shadow(-12px 14px 26px #000a);will-change:transform;opacity:.99}
+#imm-hand>img{position:absolute;right:-13%;bottom:-25%;width:120%;height:105%;object-fit:contain;transform:rotate(4deg)}
+#imm-held{position:absolute;bottom:31%;right:21%;width:33%;height:49%;transform:rotate(13deg);filter:drop-shadow(0 0 6px #0008)}
+#imm-held svg{width:100%;height:100%;overflow:visible}
+#imm-toolbar{position:absolute;left:50%;bottom:clamp(104px,16vh,150px);transform:translateX(-50%);display:flex;gap:6px;pointer-events:auto;padding:6px;background:#09090dc4;border:1px solid #aea38b3d;box-shadow:0 7px 28px #0009;backdrop-filter:blur(10px)}
+#imm-toolbar button{position:relative;width:clamp(56px,5.6vw,73px);height:62px;background:#282429b5;color:#efdec2;border:1px solid #7e7167a1;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:21px;transition:.18s}
+#imm-toolbar button:hover,#imm-toolbar button.active{background:#59373a;border-color:#c9a68c;box-shadow:inset 0 0 17px #d97f4140}
+#imm-toolbar strong{position:absolute;top:2px;left:5px;color:#eee4cdad;font:9px monospace}
+#imm-toolbar button span{font:9px Georgia,serif;letter-spacing:.07em}
+#imm-gear,#imm-album{position:absolute;top:clamp(130px,20vh,200px);pointer-events:auto;border:1px solid #a68b707a;color:#f0d3ac;background:#090c0bc2;cursor:pointer;font-size:18px;padding:9px 11px;backdrop-filter:blur(12px)}
+#imm-gear{right:27px}#imm-album{right:27px;top:clamp(180px,27vh,250px)}#imm-gear span,#imm-album span{font-size:8px;letter-spacing:.1em;margin-left:3px}
+#imm-controls-tip{position:absolute;bottom:13px;left:50%;transform:translateX(-50%);font:9px Georgia;letter-spacing:.14em;color:#ccb9a59e;text-align:center;width:90%}
+#imm-start-hint{position:absolute;top:52%;left:50%;transform:translateX(-50%);font:11px Georgia;letter-spacing:.2em;white-space:nowrap;text-shadow:0 0 18px #000,0 0 9px #000;opacity:.7;animation:imm-hint-fade 6s forwards}
+@keyframes imm-hint-fade{0%,50%{opacity:1}100%{opacity:0}}
+#imm-flash{position:absolute;inset:0;opacity:0;pointer-events:none;background:#fff4d0;mix-blend-mode:screen}
+#imm-flash.camera-burst{animation:imm-camera-flash .5s ease-out}#imm-flash.torch-burst{animation:imm-torch-flash .35s ease-out}
+@keyframes imm-camera-flash{0%,8%{opacity:.98}20%{opacity:.85}100%{opacity:0}}@keyframes imm-torch-flash{0%,15%{opacity:.38}100%{opacity:0}}
+#imm-veil{position:absolute;inset:0;background:#03040ae8;pointer-events:auto;display:grid;place-items:center;z-index:24;padding:18px;overflow:auto}
+#imm-veil[hidden],#imm-scare[hidden],#imm-gameover[hidden]{display:none!important}
+#imm-panel{position:relative;width:min(640px,100%);max-height:88vh;overflow:auto;border:1px solid #a68b6b73;padding:clamp(20px,4vw,40px);background:linear-gradient(145deg,#242022,#0d1015 76%);box-shadow:0 24px 110px #000;color:#e2d1af;pointer-events:auto}
+#imm-panel h2{font:normal clamp(29px,5vw,47px) Georgia,serif;letter-spacing:.08em;color:#f0e1c7;margin:8px 0 22px}#imm-panel p{line-height:1.7;font-size:15px;color:#c1b7a6}
+.imm-kicker{font:10px Georgia,serif!important;letter-spacing:.24em!important;color:#bd7a6f!important}
+#imm-close{position:absolute;right:18px;top:13px;background:transparent;border:0;color:#efd8b7;cursor:pointer;font:26px Georgia}
+#imm-panel label{display:block;letter-spacing:.12em;font-size:12px;color:#d4bbaa;margin:23px 0 12px}
+.imm-diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.imm-diff{padding:19px 7px;background:#18191da8;color:#e3d0b2;border:1px solid #80716191;font:14px Georgia;letter-spacing:.12em;cursor:pointer}.imm-diff.selected{background:#60383a;border-color:#e7c5a2}.imm-diff small{display:block;font:11px/1.5 Georgia;letter-spacing:0;opacity:.75;margin-top:10px}
+#imm-sense{width:100%;accent-color:#b05f62}.imm-check{display:flex!important;gap:14px;align-items:center;cursor:pointer}.imm-check input{accent-color:#a95057;width:18px;height:18px}
+#imm-panel p.imm-small{font-size:12px;opacity:.7}
+.imm-photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:20px 0}.imm-photo{background:#17181a;color:#ddd2bb;border:1px solid #746858;cursor:pointer;padding:6px;text-align:left}.imm-photo img{width:100%;aspect-ratio:16/9;object-fit:cover}.imm-photo span{display:block;font:10px Georgia;margin:9px 4px}
+#imm-photo-large img{width:100%;border:8px solid #cab99a;box-sizing:border-box}#imm-export-pics{padding:12px 20px;background:#5a3439;border:1px solid #b88b7e;color:#efdbc6;cursor:pointer}
+#imm-scare{position:absolute;inset:-6%;z-index:25;background:#060506;overflow:hidden;pointer-events:none}
+#imm-scare img{display:block;position:absolute;left:50%;top:50%;width:clamp(370px,66vw,1150px);height:120vh;object-fit:contain;transform:translate(-50%,-50%) scale(.7);filter:contrast(1.35) brightness(.72) drop-shadow(0 0 50px #000)}
+#imm-scare .imm-scare-red{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at center,transparent 21%,#cd1935e5 100%);mix-blend-mode:screen;opacity:.78}
+#imm-scare.run img{animation:imm-jump 1.88s cubic-bezier(.1,.4,.22,1) both}#imm-scare.run{animation:imm-shake .08s steps(2,end) 21}
+@keyframes imm-jump{0%{transform:translate(-50%,-50%) scale(.35);filter:brightness(.13)}13%{transform:translate(-50%,-50%) scale(.45);filter:brightness(.3)}25%{transform:translate(-50%,-50%) scale(1.9) rotate(3deg);filter:brightness(1.6) contrast(1.5)}40%{transform:translate(-52%,-54%) scale(2.8) rotate(-5deg)}68%{transform:translate(-45%,-52%) scale(3.3) rotate(5deg)}100%{transform:translate(-50%,-52%) scale(4.2);filter:brightness(.04)}}
+@keyframes imm-shake{0%{transform:translate(-23px,13px) rotate(-2deg)}100%{transform:translate(19px,-15px) rotate(2deg)}}
+#imm-gameover{position:absolute;inset:0;z-index:27;display:grid;place-items:center;pointer-events:auto;padding:20px;background:radial-gradient(ellipse at center,#311b22 0%,#0d1014 58%,#040406 100%);overflow-y:auto}
+.imm-death-card{max-width:650px;width:100%;padding:30px 24px;text-align:center;background:#130e12b0;border:1px solid #9a56555c;box-shadow:0 0 100px #7c23351e}
+.imm-death-card h2{font:normal clamp(56px,10vw,115px)/.9 Georgia,serif;color:#e9d9bd;letter-spacing:.09em;margin:26px 0}.imm-death-card h2 em{color:#9f353b;font-style:normal}
+.imm-death-card>p:not(.imm-kicker){font:15px/1.8 Georgia;color:#c2a6a1}
+.imm-death-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:30px auto;max-width:520px}.imm-death-actions button{padding:16px 8px;background:#2e2226;color:#ead2ba;border:1px solid #856e67;font:11px Georgia;letter-spacing:.11em;cursor:pointer}.imm-death-actions button:hover{background:#79363d;border-color:#d8a795}
+#imm-death-stats{color:#bbad9d;font:10px Georgia;letter-spacing:.14em;line-height:1.8}
+#imm-mobile{display:none}
+/* Story-choices remain fully playable and preserve the original branching system. */
+#game.immersive-active .narrative{z-index:15!important;max-height:min(29vh,310px)!important;overflow:auto!important;backdrop-filter:blur(16px);background:linear-gradient(100deg,#100d10ef,#171318d9)!important;border:1px solid #7767598a!important;box-shadow:0 5px 44px #000c}
+#game.immersive-active .narrative.collapsed{max-height:37px!important;overflow:hidden!important}
+#game.immersive-active .narrative #story-text{line-height:1.35!important}
+#game.immersive-active #choices{max-height:105px;overflow:auto}
+#game.immersive-active #crosshair{opacity:0!important}
+#game.immersive-active .hud-top{z-index:18!important;pointer-events:none}#game.immersive-active .hud-top button{pointer-events:auto}
+#game.immersive-active .hud-bottom{z-index:17!important;pointer-events:none}#game.immersive-active .hud-bottom button{pointer-events:auto}
+#game.immersive-active #transition{z-index:19!important;pointer-events:none}
+#game.immersive-active #modal-backdrop{z-index:38!important}
+#game.immersive-active #scene-announcement{z-index:20!important;pointer-events:none}
+#game.immersive-active #puzzle-panel{z-index:19!important}
+#game.immersive-active #danger{z-index:19!important}
+/* Touch: independent left thumbstick, drag-to-look canvas, and large USE/HIDE/RUN buttons. */
+@media (hover:none),(pointer:coarse){#imm-mobile{display:block}#imm-controls-tip,#imm-start-hint{display:none}#imm-stick{position:absolute;left:18px;bottom:clamp(165px,30vh,270px);width:116px;height:116px;border:2px solid #ded2b15a;border-radius:50%;background:radial-gradient(circle,#736a6045,#0b1012aa);pointer-events:auto;touch-action:none}#imm-stick-cap{position:absolute;left:29px;top:29px;width:54px;height:54px;border:2px solid #dbbea1b5;border-radius:50%;background:#8f655c90;box-shadow:0 0 16px #0005}#imm-touch-actions{display:flex;gap:8px;position:absolute;right:16px;bottom:clamp(180px,30vh,275px);pointer-events:auto}#imm-touch-actions button{width:62px;height:58px;background:#271e24cd;border:1px solid #caab8e;color:#f6e5ca;font:13px Georgia;border-radius:2px;touch-action:none}#imm-hand{right:-16%;bottom:0;width:clamp(230px,47vw,390px)}#imm-toolbar{bottom:calc(94px + env(safe-area-inset-bottom));left:50%}#imm-toolbar button{width:54px;height:55px;font-size:18px}#imm-room{top:88px;left:15px;max-width:48%;line-height:1.4}#imm-status{top:106px;right:15px;font-size:10px;display:grid;gap:4px}#imm-gear{right:11px;top:168px}#imm-album{right:11px;top:218px}}
+@media(max-width:640px){#game.immersive-active .narrative{max-height:27vh!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;box-sizing:border-box;padding:11px!important;border-left:0!important;border-right:0!important;border-bottom:0!important}#game.immersive-active .narrative #story-text{font-size:12px!important}#game.immersive-active #choices{max-height:68px}#imm-toolbar{bottom:calc(29vh + 6px)}#imm-hand{bottom:18vh;width:70vw;right:-21%}#imm-stick{bottom:calc(29vh + 73px)}#imm-touch-actions{bottom:calc(29vh + 104px);gap:4px}#imm-touch-actions button{width:51px;height:48px;font-size:11px}#imm-gear{top:168px}#imm-album{top:214px}.imm-diff-grid{grid-template-columns:1fr}.imm-diff{padding:10px}.imm-death-actions{grid-template-columns:1fr}#imm-threat{top:55px}#imm-room{top:78px}#imm-status{top:90px}}
+@media(prefers-reduced-motion:reduce){#imm-scare.run,#imm-scare.run img{animation-duration:.5s!important;animation-iteration-count:1!important}#imm-flash.camera-burst{animation-duration:.25s}}
+
+#imm-scare.calm.run,#imm-scare.calm.run img{animation-duration:.45s!important;animation-iteration-count:1!important}
+
+#imm-held .imm-held-photo{position:absolute;left:22%;top:15%;width:61%;height:54%;object-fit:cover;transform:rotate(1deg);border:2px solid #b0a18b;filter:sepia(.3) contrast(1.1)}
+
+/* V1.6 · CINEMATIC GAME OVER — gameplay reference layout, original game assets */
+#imm-gameover{position:absolute;inset:0;z-index:32;display:flex;justify-content:flex-end;align-items:stretch;pointer-events:auto;overflow:hidden;padding:0;background:#070606;color:#eee5d6;isolation:isolate}
+#imm-gameover[hidden]{display:none!important}
+.imm-death-atmosphere{position:absolute;inset:0;z-index:-1;background:linear-gradient(91deg,rgba(28,4,9,.06),#090507d4 66%,#020304 100%),url('./assets/stage.webp') center / cover no-repeat;filter:brightness(.52) contrast(1.15) saturate(.58)}
+.imm-death-atmosphere::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 29% 43%,#f315270a 1%,#cf112b44 39%,#020102ae 88%)}
+.imm-death-visual{position:absolute;left:0;top:0;width:64%;height:100%;overflow:hidden;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 41% 42%,#b51b2745 1%,#25060bb8 57%,#080708d0 90%)}
+.imm-death-visual:before{content:'';position:absolute;inset:0;z-index:2;box-shadow:inset -110px 0 170px #050406, inset 0 0 130px #000a;background:linear-gradient(90deg,#9e142009 10%,#0000 64%,#090607ca 100%)}
+.imm-death-figure{position:absolute;top:-14%;left:-23%;height:130%;width:124%;object-fit:contain;object-position:center;transform:rotate(-11deg) scale(1.13);filter:sepia(.19) contrast(1.3) brightness(.65) drop-shadow(0 0 38px #a70c2169);animation:imm-death-breathe 3.5s ease-in-out infinite alternate}
+@keyframes imm-death-breathe{0%{transform:rotate(-12deg) scale(1.12) translateY(7px)}100%{transform:rotate(-9deg) scale(1.19) translateY(-6px)}}
+.imm-death-blood{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at 12% 48%,#9e122820 0%,#72020b00 76%);box-shadow:inset 0 0 110px #a909183b}
+.imm-death-reach{position:absolute;left:3%;bottom:-35%;height:83%;width:60%;object-fit:contain;transform:rotate(-52deg);filter:brightness(.34) sepia(.7) hue-rotate(316deg) saturate(2) drop-shadow(4px 0 26px #ac1718a8);opacity:.42;z-index:3}
+.imm-death-visual-caption{position:absolute;left:4.5%;bottom:4%;font:clamp(9px,1vw,14px) Georgia,serif;letter-spacing:.2em;z-index:5;color:#fff6e3a0;text-shadow:0 2px 12px #000}
+.imm-death-visual-caption span{padding:0 10px;color:#b42031}
+.imm-death-card{position:relative;z-index:3;width:min(44vw,710px);height:100%;box-sizing:border-box;overflow:auto;display:flex;flex-direction:column;align-items:stretch;justify-content:center;padding:clamp(27px,4.8vw,78px) clamp(26px,4vw,75px);background:linear-gradient(110deg,#090708a8 0%,#080809ea 20%,#08090bf6 100%);border:0;border-left:1px solid #a13c3728;text-align:left;box-shadow:-42px 0 100px #0503069c;scrollbar-width:thin;scrollbar-color:#732c36 #100a0c}
+.imm-death-chapter{margin:0 0 12px!important;font:clamp(10px,.85vw,12px) Georgia,serif!important;letter-spacing:.25em;color:#bdad98!important}
+.imm-death-rule{height:1px;background:linear-gradient(90deg,#c4afa167,#7a222837,transparent);margin:0 0 18px}
+.imm-death-card h2{margin:0!important;font:normal clamp(55px,6.1vw,116px)/.9 Georgia,'Times New Roman',serif!important;letter-spacing:-.035em!important;color:#d7c5b9!important;text-shadow:0 3px 12px #000,1px -1px 0 #a4968b,-1px 3px #26171d;text-transform:uppercase}
+.imm-death-card h2 em{color:#991d2b!important;font-style:normal;text-shadow:0 2px 0 #1a0207,1px 4px 0 #510710,-2px 0 9px #6e09155c}
+.imm-death-subtitle{margin:16px 0 12px!important;font:clamp(10px,.86vw,13px) Georgia,serif!important;letter-spacing:.28em!important;color:#d6c2a2!important}
+#imm-death-detail{font:clamp(13px,1vw,16px)/1.55 Georgia,serif!important;color:#af9993!important;margin:0 0 19px!important;min-height:25px}
+.imm-death-actions{display:grid;grid-template-columns:1fr;gap:9px;width:100%;max-width:none;margin:7px 0 21px}
+.imm-death-actions button{min-height:43px;padding:10px 16px;background:#0d0d10b8;border:1px solid #aaa09b51;color:#e5d7cb;font:clamp(11px,.92vw,14px) Georgia,serif;letter-spacing:.17em;cursor:pointer;transition:background .17s,border-color .17s,box-shadow .17s,transform .17s}
+.imm-death-actions button:hover:not(:disabled),.imm-death-actions button:focus-visible{outline:0;background:#35131c;border-color:#d75161;box-shadow:0 0 20px #cf1b3c36;transform:translateX(3px)}
+.imm-death-actions button.imm-primary-death{background:linear-gradient(180deg,#3f0a16,#19060c);border-color:#e44553;box-shadow:inset 0 0 19px #b820313d,0 0 21px #9f061d20;color:#fff4de}
+.imm-death-actions button:disabled{opacity:.38;cursor:not-allowed}
+.imm-death-divider{display:flex;gap:12px;align-items:center;font:clamp(10px,.75vw,12px) Georgia,serif;color:#b49f95;letter-spacing:.23em;white-space:nowrap;margin:1px 0 13px}.imm-death-divider:after{content:'';height:1px;background:#ba99803f;flex:1}
+.imm-death-stats{margin:0;display:grid;gap:0;padding:0;font-family:Georgia,serif}
+.imm-death-stats div{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:7px 0;border-bottom:1px solid #b99f8b20}
+.imm-death-stats dt{font-size:clamp(10px,.79vw,12px);color:#b4a398;letter-spacing:.08em}
+.imm-death-stats dd{font-size:clamp(10px,.86vw,13px);margin:0;text-align:right;color:#e8d8c7;text-transform:uppercase}
+.imm-death-evidence{margin:15px 0 10px;min-height:36px;background:transparent;color:#dec7ae;border:1px solid #85685e63;font:clamp(10px,.76vw,12px) Georgia,serif;letter-spacing:.14em;cursor:pointer}
+.imm-death-evidence:hover{background:#48242a;border-color:#b68a74}
+.imm-death-footer{margin:9px 0 0!important;text-align:center;font:clamp(10px,.72vw,12px) Georgia,serif!important;letter-spacing:.22em;color:#977f7a!important}
+.imm-death-polaroid{position:absolute;right:45%;bottom:4%;width:clamp(105px,12vw,205px);padding:9px 9px 13px;z-index:4;transform:rotate(-11deg);background:#bcb0a1;border:1px solid #2f2521;box-shadow:2px 13px 30px #000c;opacity:.92}
+.imm-death-polaroid img{display:block;width:100%;height:clamp(80px,12vw,190px);object-fit:contain;background:radial-gradient(ellipse,#453332,#08090a 74%);filter:grayscale(1) contrast(1.6) brightness(.72)}
+.imm-death-polaroid span{display:block;text-align:center;color:#80151c;font:bold italic clamp(9px,.97vw,15px) Georgia,serif;line-height:1.2;margin:10px 2px 0}
+#imm-gameover[data-death-area='stage'] .imm-death-visual{background:radial-gradient(ellipse at 36% 39%,#d14a253e,#210708c9 70%)}
+#imm-gameover[data-death-area='arcade'] .imm-death-visual{background:radial-gradient(ellipse at 36% 39%,#5c0c5b39,#210708c9 70%)}
+@media(max-width:780px){#imm-gameover{display:block;overflow-y:auto;background:#080607}.imm-death-visual{position:absolute;width:100%;height:52vh;min-height:300px;max-height:490px;top:0}.imm-death-figure{top:-39%;left:-16%;height:158%;width:120%;filter:brightness(.52) contrast(1.45)}.imm-death-reach{display:none}.imm-death-card{position:relative;margin-top:30vh;width:100%;height:auto;min-height:70vh;padding:28px clamp(23px,6vw,45px) 40px;background:linear-gradient(180deg,#0b0809a8,#080609f5 6%,#08070b 100%);border-left:0;border-top:1px solid #9b313b61;overflow:visible;box-shadow:0 -35px 70px #0008}.imm-death-card h2{font-size:clamp(56px,12vw,89px)!important}.imm-death-polaroid{width:115px;right:4%;top:16px;bottom:auto;transform:rotate(10deg);opacity:.66;display:none}.imm-death-visual-caption{bottom:38%;left:5%;font-size:10px}.imm-death-actions{gap:8px;margin:5px 0 21px}.imm-death-actions button{min-height:47px;font-size:13px}.imm-death-stats dt,.imm-death-stats dd{font-size:12px}.imm-death-chapter{font-size:11px!important}}
+@media(max-height:550px) and (min-width:781px){.imm-death-card{padding:14px 30px;justify-content:flex-start}.imm-death-card h2{font-size:clamp(45px,7vw,72px)!important}.imm-death-actions button{min-height:33px}.imm-death-stats div{padding:3px 0}.imm-death-subtitle{margin:6px 0!important}}
+@media(prefers-reduced-motion:reduce){.imm-death-figure{animation:none!important}.imm-death-actions button{transition:none!important}}
+
+#imm-open-journal{margin:10px 0 0 9px;padding:12px 20px;background:#221c20;color:#eed9bf;border:1px solid #a68b707a;font:12px Georgia;letter-spacing:.1em;cursor:pointer}#imm-open-journal:hover{background:#492a31}
